@@ -1,0 +1,23 @@
+{
+  "X1": 512,
+  "Y1": 70,
+  "FirstPath": "C:\\Users\\Den\\Desktop\\еу\\TabularSystemTest\\bin\\Debug\\Notes\\23.JSON",
+  "X2": 38,
+  "Y2": 226,
+  "SecondPath": "C:\\Users\\Den\\Desktop\\еу\\TabularSystemTest\\bin\\Debug\\Notes\\122.JSON",
+  "Title": "New Connection",
+  "sizeW1": 200,
+  "sizeH1": 100,
+  "sizeW2": 200,
+  "sizeH2": 100,
+  "textcolor1": -1,
+  "textcolor2": -1,
+  "backcolor1": -150515,
+  "backcolor2": -7330456,
+  "borderRad1": 0,
+  "borderRad2": 0,
+  "bordersize1": 0,
+  "bordersize2": 0,
+  "bordercolor1": -2396013,
+  "bordercolor2": -2396013
+}

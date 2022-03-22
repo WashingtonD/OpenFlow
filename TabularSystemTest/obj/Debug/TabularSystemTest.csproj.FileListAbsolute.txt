@@ -1,0 +1,11 @@
+C:\Users\Den\source\repos\TabularSystemTest\TabularSystemTest\bin\Debug\TabularSystemTest.exe.config
+C:\Users\Den\source\repos\TabularSystemTest\TabularSystemTest\bin\Debug\TabularSystemTest.exe
+C:\Users\Den\source\repos\TabularSystemTest\TabularSystemTest\bin\Debug\TabularSystemTest.pdb
+C:\Users\Den\source\repos\TabularSystemTest\TabularSystemTest\obj\Debug\TabularSystemTest.csprojAssemblyReference.cache
+C:\Users\Den\source\repos\TabularSystemTest\TabularSystemTest\obj\Debug\TabularSystemTest.MainForm.resources
+C:\Users\Den\source\repos\TabularSystemTest\TabularSystemTest\obj\Debug\TabularSystemTest.MyRichTextBox.resources
+C:\Users\Den\source\repos\TabularSystemTest\TabularSystemTest\obj\Debug\TabularSystemTest.Properties.Resources.resources
+C:\Users\Den\source\repos\TabularSystemTest\TabularSystemTest\obj\Debug\TabularSystemTest.csproj.GenerateResource.cache
+C:\Users\Den\source\repos\TabularSystemTest\TabularSystemTest\obj\Debug\TabularSystemTest.csproj.CoreCompileInputs.cache
+C:\Users\Den\source\repos\TabularSystemTest\TabularSystemTest\obj\Debug\TabularSystemTest.exe
+C:\Users\Den\source\repos\TabularSystemTest\TabularSystemTest\obj\Debug\TabularSystemTest.pdb

@@ -1,0 +1,10 @@
+{
+  "X": 124,
+  "Y": 287,
+  "Path": "C:\\Users\\Den\\Desktop\\еу\\TabularSystemTest\\bin\\Debug\\Notes\\1.txt"
+}
+{
+  "X": 300,
+  "Y": 50,
+  "Path": "C:\\Users\\Den\\Desktop\\еу\\TabularSystemTest\\bin\\Debug\\Notes\\3.txt"
+}

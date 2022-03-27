@@ -25,6 +25,11 @@ namespace TabularSystemTest
             listOfConnections = new List<Connection>();
             placeOfTree = tp;
         }*/
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
        public string Name
         {
             get

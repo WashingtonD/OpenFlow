@@ -35,6 +35,8 @@ namespace TabularSystemTest
         public List<String> OpenedFilesList = new List<String> { };
         //private static List<TreeGraph> OpenedTreesList = new List<TreeGraph> { };
         private static Dictionary<TabPage, TreeGraph> OpenedTreesDict = new Dictionary<TabPage, TreeGraph>();
+        private static Dictionary<TabPage, List<(NodeOfTree, Size)>> DefaultTreesModel = new Dictionary<TabPage, List<(NodeOfTree, Size)>>();
+        //private static Dictionary<TabPage, List<Size>> DefaultTreesModel = new Dictionary<TabPage, List<Size>>();
         CrossTabControl tabControl1 = null;
         //public enum Colors { Red = 1, Green = 2, LtBlue = 3, Blue = 4, };
         private Random rnd = new Random();
@@ -161,7 +163,8 @@ namespace TabularSystemTest
                     SqlDataReader sqlRead = sqlCom.ExecuteReader();
                     while (sqlRead.Read())
                     {
-                        loadFromDirectory(treeView1, sqlRead["Path"].ToString(), 1, 0);
+                        string path = sqlRead["Path"].ToString();
+                        loadFromDirectory(treeView1, path, 1, 0);
                     }
                 }
             }
@@ -668,18 +671,20 @@ namespace TabularSystemTest
                         if (sqlRead["Path"].ToString() == directory)
                         {
                             Int32.TryParse((sqlRead["Id"].ToString()), out identify);
+                            break;
                         }
                     }
                     sqlRead.Close();
                 }
                 if(identify == -1)
                 {
-                    using(SqlCommand sqlC = new SqlCommand($"INSERT INTO [Folder] OUTPUT INSERTED.Id VALUES(@Path)"))
+                    using(SqlCommand sqlC = new SqlCommand($"INSERT INTO [Folder] OUTPUT INSERTED.Id VALUES(@Path,@isOpen)"))
                     {
                         sqlC.Connection = sqlConnection;
                         if (sqlConnection.State == ConnectionState.Closed)
                             sqlConnection.Open();
-                        sqlC.Parameters.AddWithValue("@Path", path);
+                        sqlC.Parameters.AddWithValue("@Path", directory);
+                        sqlC.Parameters.AddWithValue("@isOpen", false);
                         identify = (Int32)sqlC.ExecuteScalar();
                     }
                 }
@@ -745,6 +750,9 @@ namespace TabularSystemTest
 
                         Point position = treeNode.buttonNode.Location;
 
+                        Size defaultSize = new Size(200,150);
+                        defaultSize = DefaultTreesModel[tabControl1.SelectedTab].Find(x => x.Item1 == treeNode).Item2;
+
                         using (SqlCommand sqlCom = new SqlCommand($"INSERT INTO [Connection] OUTPUT INSERTED.Id VALUES(@PositionX,@PositionY,@BackupId,@TreeId,@BackColor,@BorderColor,@BorderSize,@TextColor,@Width,@Height)"))
                         {
                             sqlCom.Connection = sqlConnection;
@@ -758,8 +766,8 @@ namespace TabularSystemTest
                             sqlCom.Parameters.AddWithValue("@BorderColor", treeNode.buttonNode.BorderColor.ToArgb());
                             sqlCom.Parameters.AddWithValue("@BorderSize", treeNode.buttonNode.BorderSize);
                             sqlCom.Parameters.AddWithValue("@TextColor", treeNode.buttonNode.TextColor.ToArgb());
-                            sqlCom.Parameters.AddWithValue("@Width", treeNode.buttonNode.Width);
-                            sqlCom.Parameters.AddWithValue("@Height", treeNode.buttonNode.Height);
+                            sqlCom.Parameters.AddWithValue("@Width", defaultSize.Width);
+                            sqlCom.Parameters.AddWithValue("@Height", defaultSize.Height);
                             tempDict.Add(treeNode, (int)sqlCom.ExecuteScalar());
                         }
                     }
@@ -808,6 +816,8 @@ namespace TabularSystemTest
             foreach (Connection con in a.listOfConnections)
             {
                 o = new JObject();
+                Size originalOne = new Size(0,0);
+                Size originalSecond = new Size(0,0);
                 o["X1"] = con.FirstNode.buttonNode.Location.X;
                 o["Y1"] = con.FirstNode.buttonNode.Location.Y;
                 o["FirstPath"] = con.FirstNode.Path;
@@ -815,10 +825,14 @@ namespace TabularSystemTest
                 o["Y2"] = con.SecondNode.buttonNode.Location.Y;
                 o["SecondPath"] = con.SecondNode.Path;
                 o["Title"] = con.Title;
-                o["sizeW1"] = con.FirstNode.buttonNode.Size.Width;
-                o["sizeH1"] = con.FirstNode.buttonNode.Size.Height;
-                o["sizeW2"] = con.SecondNode.buttonNode.Size.Width;
-                o["sizeH2"] = con.SecondNode.buttonNode.Size.Height;
+                
+                originalOne = DefaultTreesModel[tabControl1.SelectedTab].Find(x => x.Item1 == con.FirstNode).Item2;
+                originalSecond = DefaultTreesModel[tabControl1.SelectedTab].Find(x => x.Item1 == con.SecondNode).Item2;
+
+                o["sizeW1"] = originalOne.Width ;//con.FirstNode.buttonNode.Size.Width;
+                o["sizeH1"] = originalOne.Height;//con.FirstNode.buttonNode.Size.Height;
+                o["sizeW2"] = originalSecond.Width;//con.SecondNode.buttonNode.Size.Width;
+                o["sizeH2"] = originalSecond.Height;//con.SecondNode.buttonNode.Size.Height;
                 o["textcolor1"] = con.FirstNode.buttonNode.ForeColor.ToArgb();
                 o["textcolor2"] = con.SecondNode.buttonNode.ForeColor.ToArgb();
                 o["backcolor1"] = con.FirstNode.buttonNode.BackColor.ToArgb();
@@ -1168,6 +1182,8 @@ namespace TabularSystemTest
             
             TreeGraph tg = new TreeGraph();
             OpenedTreesDict.Add(treeTabPage, tg);
+            List<(NodeOfTree, Size)> nodes = new List<(NodeOfTree, Size)>();
+            DefaultTreesModel.Add(treeTabPage, nodes);
             scaleStatus.Add(tg, new Tuple<int, int>(0, 0));
             
             tabControl1.TabPages.Add(treeTabPage);
@@ -1277,6 +1293,8 @@ namespace TabularSystemTest
                     TreeGraph tg = new TreeGraph();
                     scaleStatus.Add(tg, new Tuple<int, int>(0, 0));
                     OpenedTreesDict.Add(tp, tg);
+                    List<(NodeOfTree, Size)> nodes = new List<(NodeOfTree, Size)>();
+                    DefaultTreesModel.Add(tp, nodes);
                    // tabControl1.TabPages.Add(tp);
                     pictureBox.MouseDown += PictureBox_MouseDown;
                     pictureBox.MouseUp += PictureBox_MouseUp;
@@ -1311,6 +1329,7 @@ namespace TabularSystemTest
                             pictureBox.Controls.Add(buttonFirst);
                            nodeFirst = new NodeOfTree(buttonFirst, Path.GetFileName(node.FirstPath), node.FirstPath);
                             tg.listOfNodes.Add(nodeFirst);
+                            DefaultTreesModel[tp].Add((nodeFirst, buttonFirst.Size));
                         }
                         else
                         {
@@ -1342,8 +1361,9 @@ namespace TabularSystemTest
                             pictureBox.Controls.Add(buttonSecond);
                             nodeSecond = new NodeOfTree(buttonSecond, Path.GetFileName(node.SecondPath), node.SecondPath);
                             tg.listOfNodes.Add(nodeSecond);
+                            DefaultTreesModel[tp].Add((nodeSecond, buttonSecond.Size));
                         }
-                        else
+                        else 
                         {
                             CustomButton buttonSecond = array[0] as CustomButton;
                             nodeSecond = tg.listOfNodes.Find(x => x.Name == buttonSecond.Name);
@@ -1686,6 +1706,8 @@ namespace TabularSystemTest
                         TreeGraph tg = new TreeGraph();
                         scaleStatus.Add(tg, new Tuple<int, int>(0, 0));
                         OpenedTreesDict.Add(treeTabPage, tg);
+                        List<(NodeOfTree, Size)> nodes = new List<(NodeOfTree, Size)>();
+                        DefaultTreesModel.Add(treeTabPage, nodes);
                         tabControl1.TabPages.Add(treeTabPage);
                         pictureBox.MouseDown += PictureBox_MouseDown;
                         pictureBox.MouseUp += PictureBox_MouseUp;
@@ -1718,6 +1740,7 @@ namespace TabularSystemTest
                                 pictureBox.Controls.Add(buttonFirst);
                                 nodeFirst = new NodeOfTree(buttonFirst, Path.GetFileName(node.FirstPath), node.FirstPath);
                                 tg.listOfNodes.Add(nodeFirst);
+                                DefaultTreesModel[treeTabPage].Add((nodeFirst, buttonFirst.Size));
                             }
                             else
                             {
@@ -1749,6 +1772,7 @@ namespace TabularSystemTest
                                 pictureBox.Controls.Add(buttonSecond);
                                 nodeSecond = new NodeOfTree(buttonSecond, Path.GetFileName(node.SecondPath), node.SecondPath);
                                 tg.listOfNodes.Add(nodeSecond);
+                                DefaultTreesModel[treeTabPage].Add((nodeSecond,buttonSecond.Size));
                             }
                             else
                             {
@@ -1996,10 +2020,27 @@ namespace TabularSystemTest
                         button.BackColor = a.returnButton.BackColor;
                         button.ForeColor = a.returnButton.ForeColor;
                         button.Size = a.returnButton.Size;
+
+                        NodeOfTree x = null;
+                        //x = openedNodes.Find(y => y.Text == n.Text);
+
+                        TreeGraph currentGraph = null;
+                        OpenedTreesDict.TryGetValue(tabControl1.SelectedTab, out currentGraph);
+                        if (currentGraph != null)
+                        {
+                          x = currentGraph.listOfNodes.Find(y => y.buttonNode == button);
+                            if (x != null)
+                            {
+                                DefaultTreesModel[tabControl1.SelectedTab].RemoveAll(elem => elem.Item1 == x);
+                                DefaultTreesModel[tabControl1.SelectedTab].Add((x,button.Size));
+                            }
+                        }
+
+
                         if ((a.returnButton.Tag as string).ToLower() == "true")
                         {
-                            int x = a.returnButton.Size.Width;
-                            int borderRadius = (Int32)(x * 0.32);
+                            int y = a.returnButton.Size.Width;
+                            int borderRadius = (Int32)(y * 0.32);
                             button.BorderRadius = borderRadius;
                             button.Invalidate();
                         }
@@ -2061,6 +2102,7 @@ namespace TabularSystemTest
                 if (OpenedTreesDict.TryGetValue(ourPage, out thisGraph))
                 {
                     thisGraph.listOfNodes.Add(node);
+                    DefaultTreesModel[ourPage].Add((node, btn.Size));
                     //thisGraph.listOfNodes.Find(x => x.Path == path);
                     NodeOfTree alreadyExistColorCheck = thisGraph.listOfNodes.Find(x => x.Path == path);
                     if (alreadyExistColorCheck != null)
@@ -2151,7 +2193,7 @@ namespace TabularSystemTest
             dialog.IsFolderPicker = true;
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                string path = dialog.FileName;
+                string path = Path.GetDirectoryName(dialog.FileName);
                 try
                 {
                     int id = -1;

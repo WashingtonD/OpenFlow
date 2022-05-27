@@ -54,6 +54,8 @@ namespace TabularSystemTest
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.contextMenuStripRightClickTreeViewNode = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addToTheTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStripFolder = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.removeFromTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.contextMenuTreeView.SuspendLayout();
@@ -61,6 +63,7 @@ namespace TabularSystemTest
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.contextMenuStripRightClickTreeViewNode.SuspendLayout();
+            this.contextMenuStripFolder.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -99,7 +102,7 @@ namespace TabularSystemTest
             // 
             this.newTreeToolStripMenuItem.Name = "newTreeToolStripMenuItem";
             this.newTreeToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
-            this.newTreeToolStripMenuItem.Text = "New Tree";
+            this.newTreeToolStripMenuItem.Text = "New Graph";
             this.newTreeToolStripMenuItem.Click += new System.EventHandler(this.newTreeToolStripMenuItem_Click);
             // 
             // openToolStripMenuItem1
@@ -251,14 +254,30 @@ namespace TabularSystemTest
             this.contextMenuStripRightClickTreeViewNode.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addToTheTreeToolStripMenuItem});
             this.contextMenuStripRightClickTreeViewNode.Name = "contextMenuStripRightClickTreeViewNode";
-            this.contextMenuStripRightClickTreeViewNode.Size = new System.Drawing.Size(180, 28);
+            this.contextMenuStripRightClickTreeViewNode.Size = new System.Drawing.Size(211, 56);
             // 
             // addToTheTreeToolStripMenuItem
             // 
             this.addToTheTreeToolStripMenuItem.Name = "addToTheTreeToolStripMenuItem";
-            this.addToTheTreeToolStripMenuItem.Size = new System.Drawing.Size(179, 24);
-            this.addToTheTreeToolStripMenuItem.Text = "Add to the tree";
+            this.addToTheTreeToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
+            this.addToTheTreeToolStripMenuItem.Text = "Add to the graph";
             this.addToTheTreeToolStripMenuItem.Click += new System.EventHandler(this.addToTheTreeToolStripMenuItem_Click);
+            // 
+            // contextMenuStripFolder
+            // 
+            this.contextMenuStripFolder.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.contextMenuStripFolder.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.removeFromTreeToolStripMenuItem});
+            this.contextMenuStripFolder.Name = "contextMenuStripFolder";
+            this.contextMenuStripFolder.Size = new System.Drawing.Size(201, 28);
+            this.contextMenuStripFolder.Text = "FolderSetting";
+            // 
+            // removeFromTreeToolStripMenuItem
+            // 
+            this.removeFromTreeToolStripMenuItem.Name = "removeFromTreeToolStripMenuItem";
+            this.removeFromTreeToolStripMenuItem.Size = new System.Drawing.Size(200, 24);
+            this.removeFromTreeToolStripMenuItem.Text = "Remove from Tree";
+            this.removeFromTreeToolStripMenuItem.Click += new System.EventHandler(this.removeFromTreeToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -268,6 +287,7 @@ namespace TabularSystemTest
             this.ClientSize = new System.Drawing.Size(1189, 541);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.Name = "MainForm";
             this.Text = "OpenFlow";
@@ -280,6 +300,7 @@ namespace TabularSystemTest
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.contextMenuStripRightClickTreeViewNode.ResumeLayout(false);
+            this.contextMenuStripFolder.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -309,6 +330,8 @@ namespace TabularSystemTest
         private System.Windows.Forms.ToolStripMenuItem createLocalFolderToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addFolderToolStripMenuItem;
         public System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripFolder;
+        private System.Windows.Forms.ToolStripMenuItem removeFromTreeToolStripMenuItem;
     }
 }
 

@@ -108,11 +108,14 @@ namespace TabularSystemTest
         private void TabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             Panel pn = null;
-            foreach(Control c in tabControl1.SelectedTab.Controls)
+            if (tabControl1.SelectedTab != null)
             {
-                if(c.Name.Contains("panel"))
+                foreach (Control c in tabControl1.SelectedTab.Controls)
                 {
-                    pn = c as Panel;
+                    if (c.Name.Contains("panel"))
+                    {
+                        pn = c as Panel;
+                    }
                 }
             }
             if(pn != null)
@@ -2145,10 +2148,14 @@ namespace TabularSystemTest
                 }
                 else
                 {
-                    
-
+                    treeView1.SelectedNode = e.Node;
+                    contextMenuStripFolder.Show(treeView1, new Point(e.Node.Bounds.X, e.Node.Bounds.Y));
                 }
             }
+        }
+        private void removeFromTreeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            treeView1.Nodes.Remove(treeView1.SelectedNode);
         }
 
         private void tabControl1_DrawItem(object sender, DrawItemEventArgs e)
@@ -2394,8 +2401,6 @@ namespace TabularSystemTest
             }
             openedNodes.Clear();
         }
-
-
     }
 
     public class PanelWndProc: NativeWindow
@@ -2406,6 +2411,5 @@ namespace TabularSystemTest
             base.WndProc(ref m);
         }
     }
-    ///Richtextbox selected text
 }
 
